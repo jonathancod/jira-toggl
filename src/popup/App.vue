@@ -247,7 +247,11 @@ export default {
                 .then(function (issue) {
                   let logObject = log;
                   logObject.isSynced = false;
-                  logObject.issue = issue.data.data.name;
+                  let regex = /^\[((.*?))\]/i;
+                  let regexMatch = regex.exec(logObject.description);
+                  logObject.issue = regexMatch[1];
+                  logObject.description = logObject.description.replace(regexMatch[0],'');
+
                   logObject.checked = '';
 
                   if (_self.jiraMerge) {

@@ -247,10 +247,8 @@ export default {
                 .then(function (issue) {
                   let logObject = log;
                   logObject.isSynced = false;
-                  let regex = /^\[((.*?))\]/i;
-                  let regexMatch = regex.exec(logObject.description);
-                  logObject.issue = regexMatch[1];
-                  logObject.description = logObject.description.replace(regexMatch[0],'');
+                  logObject.issue = _self.getIssueCodeFromDescription(logObject.description);
+                  logObject.description = _self.removeIssueCodeFromDescription(logObject.issue, logObject.description);
 
                   logObject.checked = '';
 
@@ -282,6 +280,17 @@ export default {
             _self.errorMessage = typeof (error.response) !== 'undefined' ? error.response.statusText : error.response;
           }
         });
+    },
+    getIssueCodeFromDescription (description) {
+      let regex = /^\[((.*?))\]/i;
+      let regexMatch = regex.exec(description);
+      return regexMatch[1];
+    },
+    removeIssueCodeFromDescription (issueCode, description) {
+      description = description
+        .replace(issueCode, '')
+        .replace('[]', '');
+      return description;
     }
   }
 };

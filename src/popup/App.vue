@@ -240,37 +240,24 @@ export default {
         .then(function (entries) {
           entries.data.reverse();
           entries.data.forEach(function (log, index) {
-            if ((typeof log.pid !== 'undefined')) {
-              axios.get('https://www.toggl.com/api/v8/projects/' + log.pid, {
-                headers: { Authorization: 'Basic ' + window.btoa(_self.togglApiToken + ':api_token') }
-              })
-                .then(function (issue) {
-                  let logObject = log;
-                  logObject.isSynced = false;
-                  logObject.issue = _self.getIssueCodeFromDescription(logObject.description);
-                  logObject.description = _self.removeIssueCodeFromDescription(logObject.issue, logObject.description);
+            let logObject = log;
+            logObject.isSynced = false;
+            logObject.issue = _self.getIssueCodeFromDescription(logObject.description);
+            logObject.description = _self.removeIssueCodeFromDescription(logObject.issue, logObject.description);
 
-                  logObject.checked = '';
+            logObject.checked = '';
 
-                  if (_self.jiraMerge) {
-                    let logIndex = _self.logs.findIndex(i => i.description === log.description);
-                    if (logIndex !== -1) {
-                      _self.logs[logIndex].duration = _self.logs[logIndex].duration + logObject.duration;
-                    } else {
-                      _self.logs.push(logObject);
-                    }
-                  } else {
-                    _self.logs.push(logObject);
-                  }
-                  _self.checkIfAlreadyLogged(log);
-                });
+            if (_self.jiraMerge) {
+              let logIndex = _self.logs.findIndex(i => i.description === log.description);
+              if (logIndex !== -1) {
+                _self.logs[logIndex].duration = _self.logs[logIndex].duration + logObject.duration;
+              } else {
+                _self.logs.push(logObject);
+              }
             } else {
-              let logObject = log;
-              logObject.isSynced = false;
-              logObject.issue = 'NO ID';
-              logObject.checked = '';
               _self.logs.push(logObject);
             }
+            _self.checkIfAlreadyLogged(log);
           });
         })
         .catch(function (error) {

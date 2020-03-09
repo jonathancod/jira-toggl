@@ -24,7 +24,7 @@
           <md-checkbox v-model="jiraMerge">Merge time entries with same comment</md-checkbox>
           <md-field>
             <label>Toggl API token</label>
-            <md-input v-model="togglApiToken" />
+            <md-input v-model="togglApiToken" type="password" />
           </md-field>
           <div class="button__container">
             <md-button class="md-raised md-accent" @click="saveSettings">
